@@ -35,6 +35,10 @@ export function TestField() {
 
     return (
         <div className={classes.root}>
+            <Wheel
+                wheelNumbers={wheelNumbers}
+                backgroundColours={backgroundColours}
+            />
         </div>
     );
 }
