@@ -39,6 +39,18 @@ export function TestField() {
                 wheelNumbers={wheelNumbers}
                 backgroundColours={backgroundColours}
             />
+            <Spinner
+                segments={segments}
+                segColors={segColors}
+                winningSegment={null}
+                onFinished={(winner: any) => onFinished(winner)}
+                primaryColor="black"
+                contrastColor="white"
+                isOnlyOnce={false}
+                size={300}
+                upDuration={500}
+                downDuration={800}
+                fontFamily="Arial" />
         </div>
     );
 }
