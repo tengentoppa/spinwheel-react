@@ -1,5 +1,5 @@
-import Spinner from '../Spinner';
-import Wheel from '../Wheel';
+import Spinner from '../Spinner/Spinner';
+import Wheel from '../Wheel/Wheel';
 import classes from './TestField.module.scss';
 
 export function TestField() {
