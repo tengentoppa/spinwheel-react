@@ -1,0 +1,2 @@
+# spinwheel-react
+For research
