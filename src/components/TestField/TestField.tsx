@@ -1,3 +1,4 @@
+import CssSpinWheel from '../CssSpinWheel/CssSpinWheel';
 import Spinner from '../Spinner/Spinner';
 import Wheel from '../Wheel/Wheel';
 import classes from './TestField.module.scss';
@@ -35,22 +36,7 @@ export function TestField() {
 
     return (
         <div className={classes.root}>
-            <Wheel
-                wheelNumbers={wheelNumbers}
-                backgroundColours={backgroundColours}
-            />
-            <Spinner
-                segments={segments}
-                segColors={segColors}
-                winningSegment={null}
-                onFinished={(winner: any) => onFinished(winner)}
-                primaryColor="black"
-                contrastColor="white"
-                isOnlyOnce={false}
-                size={300}
-                upDuration={500}
-                downDuration={800}
-                fontFamily="Arial" />
+            <CssSpinWheel />
         </div>
     );
 }
