@@ -1,5 +1,5 @@
 import { forwardRef, Ref, useImperativeHandle } from 'react';
-import { SpinePlayer, UseSpineOption, useSpine } from '@/hooks/useSpine';
+import { SpinePlayer, UseSpineOption, useSpine } from '../hooks/useSpine';
 
 export type { SpinePlayer };
 

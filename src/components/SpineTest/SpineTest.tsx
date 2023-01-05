@@ -24,7 +24,7 @@
 //     return <div ref={spinRef}></div>;
 // }
 
-import { Spine, SpinePlayer } from '@/components/Spine';
+import { Spine, SpinePlayer } from '../../components/Spine';
 import { useEffect, useRef } from 'react';
 
 function SpineTest() {

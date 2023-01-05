@@ -1,0 +1,45 @@
+$sec-per-round: 10s;
+
+.root {
+  width: 100%;
+  height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+}
+
+.scroll {
+  display: flex;
+  flex-direction: row;
+  animation: animate1 $sec-per-round linear infinite;
+  white-space: nowrap;
+  animation-delay: -$sec-per-round;
+
+  &:nth-child(2) {
+    animation: animate2 $sec-per-round linear infinite;
+    animation-delay: calc($sec-per-round/-2);
+  }
+}
+
+.spine {
+  height: 20vh;
+}
+
+@keyframes animate1 {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes animate2 {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-200%);
+  }
+}

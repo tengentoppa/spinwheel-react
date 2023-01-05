@@ -1,18 +1,26 @@
-import { useEffect, useState } from 'react'
+import classes from './CssSpinWheel.module.scss';
 import SpineTest from '../SpineTest/SpineTest';
 
 const CssSpinWheel = (props: {
 }) => {
-    return (
-        <div>
-            {
-                [1, 2, 3, 4, 5].map(d => {
-                    return (
-                        <SpineTest key={d} />
-                    )
-                })
-            }
+    const data = [1, 2, 3, 4, 5];
+    const vw = 100 / data.length;
+    const elements = data.map(d =>
+        <div className={`${classes.spine}`} style={{ width: `${vw}vw` }}>
+            <SpineTest
+                key={d}
+            />
         </div>
+    );
+    return (
+        <section className={classes.root}>
+            <div className={`${classes.scroll} ${classes.first}`}>
+                {elements}
+            </div>
+            <div className={`${classes.scroll} ${classes.second}`}>
+                {elements}
+            </div>
+        </section>
     )
 }
 export default CssSpinWheel;
