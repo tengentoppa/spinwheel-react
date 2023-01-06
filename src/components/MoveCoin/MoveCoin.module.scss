@@ -1,0 +1,42 @@
+$sec-per-round: 0.7s;
+$fly-mode: cubic-bezier(.51, -0.45, .1, 1.06);
+
+.test {
+  width: 100px;
+  height: 100px;
+  user-select: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  &.a {
+    background-color: red;
+  }
+
+  &.b {
+    background-color: blue;
+  }
+
+  &.toleft {
+    animation: toleft $sec-per-round $fly-mode forwards;
+  }
+
+  &.toright {
+    animation: toright $sec-per-round $fly-mode forwards;
+  }
+
+  @keyframes toleft {
+    100% {
+      top: 20%;
+      left: 20%;
+    }
+  }
+
+  @keyframes toright {
+    100% {
+      top: 20%;
+      left: 80%;
+    }
+  }
+}

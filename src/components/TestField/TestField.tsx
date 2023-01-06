@@ -1,4 +1,5 @@
 import CssSpinWheel from '../CssSpinWheel/CssSpinWheel';
+import MoveCoin from '../MoveCoin/MoveCoin';
 import Spinner from '../Spinner/Spinner';
 import Wheel from '../Wheel/Wheel';
 import classes from './TestField.module.scss';
@@ -36,7 +37,8 @@ export function TestField() {
 
     return (
         <div className={classes.root}>
-            <CssSpinWheel />
+            {/* <CssSpinWheel /> */}
+            <MoveCoin strs={['1', '2']} />
         </div>
     );
 }

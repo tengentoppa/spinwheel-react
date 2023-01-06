@@ -1,4 +1,4 @@
-$sec-per-round: 10s;
+$sec-per-round: 0.9s;
 
 .root {
   width: 100%;
@@ -21,7 +21,9 @@ $sec-per-round: 10s;
 }
 
 .spine {
-  height: 20vh;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
 }
 
 @keyframes animate1 {
