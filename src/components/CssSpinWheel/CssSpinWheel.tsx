@@ -1,5 +1,4 @@
 import classes from './CssSpinWheel.module.scss';
-import SpineTest from '../SpineTest/SpineTest';
 
 const CssSpinWheel = (props: {
 }) => {

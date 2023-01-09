@@ -5,6 +5,7 @@ import MoveCoin from '../MoveCoin/MoveCoin';
 import Spinner from '../Spinner/Spinner';
 import Wheel from '../Wheel/Wheel';
 import classes from './TestField.module.scss';
+import Wheel3D from '../Wheel3D/Wheel3D';
 
 export function TestField() {
     const segments = [
@@ -46,9 +47,10 @@ export function TestField() {
 
     return (
         <div className={classes.root}>
-            <Coin multiplier={num} color={'blue'} />
+            {/* <Coin multiplier={num} color={'blue'} /> */}
             {/* <CssSpinWheel /> */}
             {/* <MoveCoin strs={['1', '2']} /> */}
+            <Wheel3D />
         </div>
     );
 }

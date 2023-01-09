@@ -1,0 +1,49 @@
+$spin-mode: linear;
+// $spin-mode:  cubic-bezier(.47, .02, .63, 1.09);
+
+.wheel {
+  border: 1px solid #333;
+  // margin: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .wheel_inner {
+    position: relative;
+    width: 600px;
+    height: 200px;
+    transform-style: preserve-3d;
+    animation-iteration-count: infinite;
+    animation-timing-function: $spin-mode;
+    animation-name: spin;
+    animation-duration: 10s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+    .wheel_segment {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 40px;
+      position: absolute;
+      left: 50%;
+      background-color: #ccc;
+
+      &:nth-child(even) {
+        background-color: #ddd;
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotateY(360deg);
+  }
+
+  100% {
+    transform: rotateY(0deg);
+  }
+}
