@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import Coin from '../Coin/Coin';
 import CssSpinWheel from '../CssSpinWheel/CssSpinWheel';
 import MoveCoin from '../MoveCoin/MoveCoin';
 import Spinner from '../Spinner/Spinner';
@@ -34,11 +36,19 @@ export function TestField() {
     const onFinished = (winner: any) => {
         console.log(winner);
     };
+    const [num, setNum] = useState(0);
+    useEffect(() => {
+        let t = setInterval(() => { setNum((num) => num + 1); }, 500);
+        return () => {
+            clearInterval(t);
+        }
+    }, [])
 
     return (
         <div className={classes.root}>
+            <Coin multiplier={num} color={'blue'} />
             {/* <CssSpinWheel /> */}
-            <MoveCoin strs={['1', '2']} />
+            {/* <MoveCoin strs={['1', '2']} /> */}
         </div>
     );
 }
