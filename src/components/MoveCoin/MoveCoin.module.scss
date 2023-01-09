@@ -29,14 +29,14 @@ $fly-mode: cubic-bezier(.51, -0.45, .1, 1.06);
   @keyframes toleft {
     100% {
       top: 20%;
-      left: 20%;
+      left: 8%;
     }
   }
 
   @keyframes toright {
     100% {
       top: 20%;
-      left: 80%;
+      left: 18%;
     }
   }
 }

@@ -7,9 +7,7 @@ const CssSpinWheel = (props: {
     const vw = 100 / data.length;
     const elements = data.map(d =>
         <div className={`${classes.spine}`} style={{ width: `${vw}vw` }}>
-            <SpineTest
-                key={d}
-            />
+            {d}
         </div>
     );
     return (

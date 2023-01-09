@@ -1,4 +1,6 @@
-$sec-per-round: 0.9s;
+$sec-per-round: 10s;
+// $fly-mode: cubic-bezier(.51, -0.45, .1, 1.06);
+$fly-mode: linear;
 
 .root {
   width: 100%;
@@ -10,12 +12,12 @@ $sec-per-round: 0.9s;
 .scroll {
   display: flex;
   flex-direction: row;
-  animation: animate1 $sec-per-round linear infinite;
+  animation: animate1 $sec-per-round $fly-mode infinite;
   white-space: nowrap;
-  animation-delay: -$sec-per-round;
+  // animation-delay: -$sec-per-round;
 
   &:nth-child(2) {
-    animation: animate2 $sec-per-round linear infinite;
+    animation: animate2 $sec-per-round $fly-mode infinite;
     animation-delay: calc($sec-per-round/-2);
   }
 }
@@ -24,6 +26,23 @@ $sec-per-round: 0.9s;
   display: flex;
   justify-content: center;
   height: 100vh;
+  color: white;
+  background-color: black;
+  &:nth-child(1) {
+    background-color: #111;
+  }
+  &:nth-child(2) {
+    background-color: #333;
+  }
+  &:nth-child(3) {
+    background-color: #555;
+  }
+  &:nth-child(4) {
+    background-color: #777;
+  }
+  &:nth-child(5) {
+    background-color: #999;
+  }
 }
 
 @keyframes animate1 {
