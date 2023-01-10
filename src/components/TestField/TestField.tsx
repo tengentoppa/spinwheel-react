@@ -50,7 +50,18 @@ export function TestField() {
             {/* <Coin multiplier={num} color={'blue'} /> */}
             {/* <CssSpinWheel /> */}
             {/* <MoveCoin strs={['1', '2']} /> */}
-            <Wheel3D />
+            <Wheel3D width={100}>
+                {Array.from({ length: 3 }, (_, i) => i).map((_, i) => {
+                    return (
+                        <div
+                            key={i}
+                            className={classes.wheel_segment}
+                        >
+                            <span>Item {i}</span>
+                        </div>
+                    );
+                })}
+            </Wheel3D>
         </div>
     );
 }

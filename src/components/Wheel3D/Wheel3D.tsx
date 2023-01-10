@@ -1,16 +1,22 @@
-import { CSSProperties, useState } from 'react';
+import { CSSProperties, ReactElement, forwardRef, useEffect, useState } from 'react';
 import classes from './Wheel3D.module.scss';
 
-const Wheel3D = (props: {
-}) => {
-    const len = 20;
-    const diameter = 1000;
+const Wheel3D = forwardRef((props: {
+    width: number,
+    children: ReactElement[]
+}, ref) => {
+    const { width, children } = props;
 
-    const data = Array.from({ length: len }, (x, i) => i);
-    const radius = diameter / 2;
-    const angle = 360 / len;
-    const circumference = Math.PI * diameter;
-    const width = circumference / len;
+    const [angle, setAngle] = useState<number>(10);
+    const [radius, setRadius] = useState<number>();
+    useEffect(() => {
+        const len = children.length;
+        const angle = 360 / len;
+        const radius = width / 2 / Math.tan(Math.PI / len);
+        setAngle(angle);
+        setRadius(radius);
+    }, [width, children])
+
 
     const [spinning, setSpinning] = useState(false);
     const [wheelStyle, setWheelStyle] = useState<CSSProperties>();
@@ -29,9 +35,15 @@ const Wheel3D = (props: {
         if (spinning) {
             return;
         }
-        setSpinning(true);
-        let targetAngle = getTargetAngle(count);
+        spin(count);
         setCount(d => d + 1);
+    }
+    const spin = (targetIndex: number) => {
+        if (spinning) {
+            return;
+        }
+        setSpinning(true);
+        let targetAngle = getTargetAngle(targetIndex);
         const animate = `
         @keyframes spin {
             0% {
@@ -48,7 +60,7 @@ const Wheel3D = (props: {
         setWheelStyle({
             animation: `spin 1s cubic-bezier(.51, 0, .1, 1.06)`,
             transform: `rotateY(${currentAngle - angle}deg)`
-        })
+        });
     }
     const stopSpin = () => {
         setWheelStyle({
@@ -76,7 +88,7 @@ const Wheel3D = (props: {
                     left: '50%',
                     transform: 'translate(-50%, 0)'
                 }} />
-                {data.map((_, i) => {
+                {children.map((d, i) => {
                     return (
                         <div
                             key={i}
@@ -87,7 +99,7 @@ const Wheel3D = (props: {
                                 marginLeft: `-${width / 2}px`
                             }}
                         >
-                            <span>Item {i}</span>
+                            {d}
                         </div>
                     );
                 })}
@@ -95,5 +107,5 @@ const Wheel3D = (props: {
             <button onClick={onClickStart} style={{ width: '200px', height: '200px', backgroundColor: 'yellow' }}></button>
         </section >
     )
-}
+})
 export default Wheel3D;
