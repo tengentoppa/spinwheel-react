@@ -77,7 +77,7 @@ const Wheel3D = forwardRef((props: {
         `;
         addAnimation(animate);
         setCurrentAngle(targetAngle % 360);
-        setRootStyle({ animation: `${classes.foo} ${time}s ${timeFunc}` });
+        setRootStyle({ animation: `${classes.blur_filter} ${time}s ${timeFunc}` });
         setWheelStyle({
             animation: `spin ${time}s ${timeFunc}`,
             transform: `rotateY(${targetAngle}deg)`

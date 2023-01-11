@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { createRef, useEffect, useRef, useState } from 'react';
 import Coin from '../Coin/Coin';
 import CssSpinWheel from '../CssSpinWheel/CssSpinWheel';
 import MoveCoin from '../MoveCoin/MoveCoin';
@@ -43,25 +43,28 @@ export function TestField() {
         return () => {
             clearInterval(t);
         }
-    }, [])
+    }, []);
+    const refWheel3D = createRef();
 
     return (
         <div className={classes.root}>
             {/* <Coin multiplier={num} color={'blue'} /> */}
             {/* <CssSpinWheel /> */}
             {/* <MoveCoin strs={['1', '2']} /> */}
-            <Wheel3D width={100}>
-                {Array.from({ length: 3 }, (_, i) => i).map((_, i) => {
+            <Wheel3D width={200} time={5} ref={refWheel3D}>
+                {Array.from({ length: 10 }, (_, i) => i).map((_, i) => {
                     return (
                         <div
                             key={i}
                             className={classes.wheel_segment}
+                            style={{ width: '100px' }}
                         >
                             <span>Item {i}</span>
                         </div>
                     );
                 })}
             </Wheel3D>
+            <button onClick={() => console.log(refWheel3D.current)} style={{ width: '200px', height: '200px', backgroundColor: 'yellow' }}></button>
         </div>
     );
 }

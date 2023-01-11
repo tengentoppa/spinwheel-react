@@ -29,3 +29,17 @@
     }
   }
 }
+
+@keyframes blur_filter {
+  0% {
+    filter: blur(0px);
+  }
+
+  50% {
+    filter: blur(0.8px);
+  }
+
+  100% {
+    filter: blur(0px);
+  }
+}
