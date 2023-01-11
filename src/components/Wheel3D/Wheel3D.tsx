@@ -3,33 +3,53 @@ import classes from './Wheel3D.module.scss';
 
 const Wheel3D = forwardRef((props: {
     width: number,
-    children: ReactElement[]
+    time: number,
+    children: ReactElement[],
 }, ref) => {
-    const { width, children } = props;
+    const { width, time, children } = props;
 
-    const [angle, setAngle] = useState<number>(10);
-    const [radius, setRadius] = useState<number>();
-    useEffect(() => {
-        const len = children.length;
-        const angle = 360 / len;
-        const radius = width / 2 / Math.tan(Math.PI / len);
-        setAngle(angle);
-        setRadius(radius);
-    }, [width, children])
+    const timeFunc = 'cubic-bezier(.51, 0, .1, 1.06)';
 
-
+    const [angle, setAngle] = useState<number>(() => 360 / children.length);
+    const [radius, setRadius] = useState<number>(() => width / 2 / Math.tan(Math.PI / children.length));
     const [spinning, setSpinning] = useState(false);
+    const [rootStyle, setRootStyle] = useState<CSSProperties>();
     const [wheelStyle, setWheelStyle] = useState<CSSProperties>();
     const [currentAngle, setCurrentAngle] = useState(0);
-    const [count, setCount] = useState(1);
+    const [count, setCount] = useState(11);
+    const getEles = (children: ReactElement[]) => {
+        return children.map((d, i) => {
+            let width: string = d.props.style.width;
+            let trueWidth = Number(width.replace('px', ''));
+            return (
+                <div
+                    key={i}
+                    className={classes.wheel_segment}
+                    style={{
+                        transform: `rotateY(${angle * i}deg) translateZ(${radius}px)`,
+                        marginLeft: `-${trueWidth / 2}px`
+                    }}
+                >
+                    {d}
+                </div>
+            );
+        });
+    }
+    const [eles, setEles] = useState(() => getEles(children));
     const [styleSheet, _] = useState(() => {
         const styleElement = document.createElement('style');
         document.head.appendChild(styleElement);
         return styleElement.sheet;
     });
-    const addAnimation = (style: string) => {
-        styleSheet?.insertRule(style, styleSheet.cssRules.length);
-    }
+
+    useEffect(() => {
+        const len = children.length;
+        const angle = 360 / len;
+        const radius = width / 2 / Math.tan(Math.PI / len);
+        setEles(getEles(children));
+        setAngle(angle);
+        setRadius(radius);
+    }, [width, ...children.map(d => d.key)]);
 
     const onClickStart = () => {
         if (spinning) {
@@ -57,24 +77,34 @@ const Wheel3D = forwardRef((props: {
         `;
         addAnimation(animate);
         setCurrentAngle(targetAngle % 360);
+        setRootStyle({ animation: `${classes.foo} ${time}s ${timeFunc}` });
         setWheelStyle({
-            animation: `spin 1s cubic-bezier(.51, 0, .1, 1.06)`,
-            transform: `rotateY(${currentAngle - angle}deg)`
+            animation: `spin ${time}s ${timeFunc}`,
+            transform: `rotateY(${targetAngle}deg)`
         });
     }
     const stopSpin = () => {
-        setWheelStyle({
-            transform: `rotateY(${currentAngle}deg)`
-        });
+        setRootStyle(undefined);
+        setWheelStyle({ transform: `rotateY(${currentAngle}deg)` });
+        removeAnimation();
         setSpinning(false);
+    }
+
+    //#region private methods
+    const addAnimation = (style: string) => {
+        styleSheet?.insertRule(style, styleSheet.cssRules.length);
+    }
+    const removeAnimation = () => {
+        styleSheet?.deleteRule(styleSheet.cssRules.length - 1);
     }
     const getTargetAngle = (targetIndex: number) => {
         const targetAngle = targetIndex * angle;
         return -targetAngle;
     }
+    //#endregion
 
     return (
-        <section className={classes.wheel}>
+        <section className={classes.wheel} style={rootStyle}>
             <div
                 className={`${classes.wheel_inner}`}
                 style={wheelStyle}
@@ -88,24 +118,10 @@ const Wheel3D = forwardRef((props: {
                     left: '50%',
                     transform: 'translate(-50%, 0)'
                 }} />
-                {children.map((d, i) => {
-                    return (
-                        <div
-                            key={i}
-                            className={classes.wheel_segment}
-                            style={{
-                                transform: `rotateY(${angle * i}deg) translateZ(${radius}px)`,
-                                width: `${width}px`,
-                                marginLeft: `-${width / 2}px`
-                            }}
-                        >
-                            {d}
-                        </div>
-                    );
-                })}
+                {eles}
             </div>
             <button onClick={onClickStart} style={{ width: '200px', height: '200px', backgroundColor: 'yellow' }}></button>
         </section >
     )
-})
+});
 export default Wheel3D;
