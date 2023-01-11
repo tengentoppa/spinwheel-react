@@ -8,7 +8,7 @@ import classes from './TestField.module.scss';
 import Wheel3D, { Wheel3DHandler } from '../Wheel3D/Wheel3D';
 
 export function TestField() {
-    const width = 200;
+    const width = 150;
     const segments = [
         "5X",
         "50X",
@@ -45,6 +45,7 @@ export function TestField() {
             clearInterval(t);
         }
     }, []);
+    const [count, setCount] = useState(3);
     const refWheel3D = useRef<Wheel3DHandler>();
 
     return (
@@ -52,7 +53,7 @@ export function TestField() {
             {/* <Coin multiplier={num} color={'blue'} /> */}
             {/* <CssSpinWheel /> */}
             {/* <MoveCoin strs={['1', '2']} /> */}
-            <Wheel3D width={width} time={5} ref={refWheel3D}>
+            <Wheel3D width={width} time={1} ref={refWheel3D}>
                 {Array.from({ length: 30 }, (_, i) => i).map((_, i) => {
                     return (
                         <div
@@ -60,12 +61,15 @@ export function TestField() {
                             className={classes.wheel_item}
                             style={{ height: `${width}px`, width: `${width}px` }}
                         >
-                            <Multiplier back='normal' multiplier={i} />
+                            <Multiplier key={i} back='normal' multiplier={i} />
                         </div>
                     );
                 })}
             </Wheel3D>
-            <button onClick={() => refWheel3D.current?.spin(5)} style={{ width: '200px', height: '200px', backgroundColor: 'yellow' }}></button>
+            <button onClick={() => {
+                refWheel3D.current?.spin(count);
+                setCount(d => d + 1);
+            }} style={{ width: '200px', height: '200px', backgroundColor: 'yellow' }}></button>
         </div>
     );
 }

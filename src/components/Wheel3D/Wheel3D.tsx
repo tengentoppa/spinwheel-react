@@ -26,11 +26,13 @@ const Wheel3D = forwardRef((props: {
     const [spinning, setSpinning] = useState(false);
     const [rootStyle, setRootStyle] = useState<CSSProperties>();
     const [wheelStyle, setWheelStyle] = useState<CSSProperties>();
+    const [backStyle, setBackStyle] = useState<CSSProperties>();
     const [currentAngle, setCurrentAngle] = useState(0);
     const getEles = (children: ReactElement[]) => {
         return children.map((d, i) => {
             let width: string = d.props.style.width;
             let trueWidth = Number(width.replace('px', ''));
+            console.log(d);
             return (
                 <div
                     key={i}
@@ -66,7 +68,7 @@ const Wheel3D = forwardRef((props: {
         }
         setSpinning(true);
         let targetAngle = getTargetAngle(targetIndex);
-        const animate = `
+        const animateSpin = `
         @keyframes spin {
             0% {
                 transform: rotateY(${currentAngle}deg);
@@ -77,17 +79,33 @@ const Wheel3D = forwardRef((props: {
             }
         }
         `;
-        addAnimation(animate);
+        const animateBack = `
+        @keyframes back {
+            0% {
+                transform: rotateY(${-currentAngle}deg);
+            }
+            
+            100% {
+                transform: rotateY(${-targetAngle}deg);
+            }
+        }`
+        addAnimation(animateSpin);
+        addAnimation(animateBack);
         setCurrentAngle(targetAngle % 360);
         setRootStyle({ animation: `${classes.blur_filter} ${time}s ${timeFunc}` });
         setWheelStyle({
             animation: `spin ${time}s ${timeFunc}`,
             transform: `rotateY(${targetAngle}deg)`
         });
+        setBackStyle({
+            animation: `back ${time}s ${timeFunc}`,
+            transform: `rotateY(${-targetAngle}deg)`
+        });
     }
     const stopSpin = () => {
         setRootStyle(undefined);
         setWheelStyle({ transform: `rotateY(${currentAngle}deg)` });
+        setBackStyle({ transform: `rotateY(${-currentAngle}deg)` });
         removeAnimation();
         setSpinning(false);
     }
@@ -100,7 +118,7 @@ const Wheel3D = forwardRef((props: {
         styleSheet?.deleteRule(styleSheet.cssRules.length - 1);
     }
     const getTargetAngle = (targetIndex: number) => {
-        const targetAngle = targetIndex * angle;
+        const targetAngle = targetIndex * angle + (Math.round(Math.random() * 5) + 3) * 360;
         return -targetAngle;
     }
     //#endregion
@@ -111,6 +129,7 @@ const Wheel3D = forwardRef((props: {
                 className={`${classes.wheel_inner}`}
                 style={wheelStyle}
                 onAnimationEnd={stopSpin}>
+                <div className={classes.background} style={backStyle}></div>
                 <div style={{
                     backgroundColor: 'red',
                     width: `${width}px`,
