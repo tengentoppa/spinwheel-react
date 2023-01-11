@@ -1,5 +1,5 @@
 import { createRef, useEffect, useRef, useState } from 'react';
-import Coin from '../Coin/Coin';
+import Multiplier from '../Multiplier/Multiplier';
 import CssSpinWheel from '../CssSpinWheel/CssSpinWheel';
 import MoveCoin from '../MoveCoin/MoveCoin';
 import Spinner from '../Spinner/Spinner';
@@ -8,6 +8,7 @@ import classes from './TestField.module.scss';
 import Wheel3D, { Wheel3DHandler } from '../Wheel3D/Wheel3D';
 
 export function TestField() {
+    const width = 200;
     const segments = [
         "5X",
         "50X",
@@ -51,15 +52,15 @@ export function TestField() {
             {/* <Coin multiplier={num} color={'blue'} /> */}
             {/* <CssSpinWheel /> */}
             {/* <MoveCoin strs={['1', '2']} /> */}
-            <Wheel3D width={200} time={5} ref={refWheel3D}>
-                {Array.from({ length: 10 }, (_, i) => i).map((_, i) => {
+            <Wheel3D width={width} time={5} ref={refWheel3D}>
+                {Array.from({ length: 30 }, (_, i) => i).map((_, i) => {
                     return (
                         <div
                             key={i}
-                            className={classes.wheel_segment}
-                            style={{ width: '100px' }}
+                            className={classes.wheel_item}
+                            style={{ height: `${width}px`, width: `${width}px` }}
                         >
-                            <span>Item {i}</span>
+                            <Multiplier back='normal' multiplier={i} />
                         </div>
                     );
                 })}
