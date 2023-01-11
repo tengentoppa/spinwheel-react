@@ -5,7 +5,7 @@ import MoveCoin from '../MoveCoin/MoveCoin';
 import Spinner from '../Spinner/Spinner';
 import Wheel from '../Wheel/Wheel';
 import classes from './TestField.module.scss';
-import Wheel3D from '../Wheel3D/Wheel3D';
+import Wheel3D, { Wheel3DHandler } from '../Wheel3D/Wheel3D';
 
 export function TestField() {
     const segments = [
@@ -44,7 +44,7 @@ export function TestField() {
             clearInterval(t);
         }
     }, []);
-    const refWheel3D = createRef();
+    const refWheel3D = useRef<Wheel3DHandler>();
 
     return (
         <div className={classes.root}>
@@ -64,7 +64,7 @@ export function TestField() {
                     );
                 })}
             </Wheel3D>
-            <button onClick={() => console.log(refWheel3D.current)} style={{ width: '200px', height: '200px', backgroundColor: 'yellow' }}></button>
+            <button onClick={() => refWheel3D.current?.spin(5)} style={{ width: '200px', height: '200px', backgroundColor: 'yellow' }}></button>
         </div>
     );
 }

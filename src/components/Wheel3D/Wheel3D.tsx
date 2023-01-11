@@ -1,11 +1,22 @@
-import { CSSProperties, ReactElement, forwardRef, useEffect, useState } from 'react';
+import { CSSProperties, ReactElement, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import classes from './Wheel3D.module.scss';
 
+export type Wheel3DHandler = {
+    spin: (targetIndex: number) => void;
+};
 const Wheel3D = forwardRef((props: {
     width: number,
     time: number,
     children: ReactElement[],
 }, ref) => {
+    useImperativeHandle(
+        ref,
+        (): Wheel3DHandler => ({
+            spin(targetIndex: number) {
+                spin(targetIndex);
+            }
+        })
+    )
     const { width, time, children } = props;
 
     const timeFunc = 'cubic-bezier(.51, 0, .1, 1.06)';
@@ -16,7 +27,6 @@ const Wheel3D = forwardRef((props: {
     const [rootStyle, setRootStyle] = useState<CSSProperties>();
     const [wheelStyle, setWheelStyle] = useState<CSSProperties>();
     const [currentAngle, setCurrentAngle] = useState(0);
-    const [count, setCount] = useState(11);
     const getEles = (children: ReactElement[]) => {
         return children.map((d, i) => {
             let width: string = d.props.style.width;
@@ -50,14 +60,6 @@ const Wheel3D = forwardRef((props: {
         setAngle(angle);
         setRadius(radius);
     }, [width, ...children.map(d => d.key)]);
-
-    const onClickStart = () => {
-        if (spinning) {
-            return;
-        }
-        spin(count);
-        setCount(d => d + 1);
-    }
     const spin = (targetIndex: number) => {
         if (spinning) {
             return;
@@ -120,7 +122,6 @@ const Wheel3D = forwardRef((props: {
                 }} />
                 {eles}
             </div>
-            <button onClick={onClickStart} style={{ width: '200px', height: '200px', backgroundColor: 'yellow' }}></button>
         </section >
     )
 });
