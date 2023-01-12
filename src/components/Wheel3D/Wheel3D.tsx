@@ -3,36 +3,44 @@ import classes from './Wheel3D.module.scss';
 
 export type Wheel3DHandler = {
     spin: (
+        /**The chosen target what are you want */
         targetIndex: number,
+        /**Elapsed seconds */
+        time?: number,
+        /**Base round, must greater than or equal 0 */
         minRound?: number,
+        /**Max round, must greater than or equal minRound */
         maxRound?: number,
+        /**See animation-timing-function in w3 css */
         timeFunc?: string) => void;
 };
 const Wheel3D = forwardRef((props: {
+    /**The width of every cell is different from the children's width */
     width: number,
-    time: number,
+    /**Wheel contents */
     children: ReactElement[],
 }, ref) => {
     useImperativeHandle(
         ref,
         (): Wheel3DHandler => ({
             spin(targetIndex: number,
+                time?: number,
                 minRound?: number,
                 maxRound?: number,
                 timeFunc?: string) {
                 spin(
                     targetIndex,
+                    time ?? 3,
                     minRound ?? 3,
                     maxRound ?? 5,
-                    timeFunc ?? 'cubic-bezier(.51, 0, .1, 1.06)',
+                    timeFunc ?? 'cubic-bezier(.21,.01,.77,1.12)',
                 );
             }
         })
     )
-    const { width, time, children } = props;
+    const { width, children } = props;
 
     const [angle, setAngle] = useState<number>(() => 360 / children.length);
-    const [radius, setRadius] = useState<number>(() => width / 2 / Math.tan(Math.PI / children.length));
     const [spinning, setSpinning] = useState(false);
     const [blurStyle, setBlurStyle] = useState<CSSProperties>();
     const [wheelStyle, setWheelStyle] = useState<CSSProperties>();
@@ -46,7 +54,7 @@ const Wheel3D = forwardRef((props: {
     });
 
     useEffect(() => {
-        const getEles = (children: ReactElement[]) => {
+        const getEles = (children: ReactElement[], radius: number) => {
             return (children.map((d, i) => {
                 const width: string = d.props.style.width;
                 const trueWidth = Number(width.replace('px', ''));
@@ -68,12 +76,12 @@ const Wheel3D = forwardRef((props: {
         const len = children.length;
         const angle = 360 / len;
         const r = width / 2 / Math.tan(Math.PI / len);
-        setEles(getEles(children));
+        setEles(getEles(children, r));
         setAngle(angle);
-        setRadius(r);
-    }, [width, ...props.children.map(d => d.key), blurStyle]);
+    }, [width, ...children.map(d => d.key), blurStyle]);
     const spin = (
         targetIndex: number,
+        time: number,
         minRound: number,
         maxRound: number,
         timeFunc: string) => {
@@ -81,7 +89,7 @@ const Wheel3D = forwardRef((props: {
             return;
         }
         if (minRound < 0 || maxRound < minRound) {
-            throw 'minRound or maxRound error';
+            throw new Error('minRound or maxRound error');
         }
         setSpinning(true);
         let targetAngle = getTargetAngle(targetIndex, minRound, maxRound);
@@ -122,7 +130,7 @@ const Wheel3D = forwardRef((props: {
 
     //#region private methods
     const spinStopped = (props: AnimationEvent<HTMLDivElement>) => {
-        if (props.animationName != 'spin') {
+        if (props.animationName !== 'spin') {
             return;
         }
         setBlurStyle(undefined);

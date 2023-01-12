@@ -53,8 +53,8 @@ export function TestField() {
             {/* <Coin multiplier={num} color={'blue'} /> */}
             {/* <CssSpinWheel /> */}
             {/* <MoveCoin strs={['1', '2']} /> */}
-            <Wheel3D width={width} time={1} ref={refWheel3D}>
-                {Array.from({ length: 30 }, (_, i) => i).map((_, i) => {
+            <Wheel3D width={width} ref={refWheel3D}>
+                {Array.from({ length: 25 }, (_, i) => i).map((_, i) => {
                     return (
                         <div
                             key={i}
@@ -67,7 +67,7 @@ export function TestField() {
                 })}
             </Wheel3D>
             <button onClick={() => {
-                refWheel3D.current?.spin(count);
+                refWheel3D.current?.spin(count, 8, 2, 4);
                 setCount(d => d + 1);
             }} style={{ width: '200px', height: '200px', backgroundColor: 'yellow' }}></button>
         </div>
