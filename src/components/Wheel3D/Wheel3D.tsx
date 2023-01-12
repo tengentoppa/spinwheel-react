@@ -1,8 +1,12 @@
-import { CSSProperties, ReactElement, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { CSSProperties, AnimationEvent, ReactElement, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import classes from './Wheel3D.module.scss';
 
 export type Wheel3DHandler = {
-    spin: (targetIndex: number) => void;
+    spin: (
+        targetIndex: number,
+        minRound?: number,
+        maxRound?: number,
+        timeFunc?: string) => void;
 };
 const Wheel3D = forwardRef((props: {
     width: number,
@@ -12,62 +16,75 @@ const Wheel3D = forwardRef((props: {
     useImperativeHandle(
         ref,
         (): Wheel3DHandler => ({
-            spin(targetIndex: number) {
-                spin(targetIndex);
+            spin(targetIndex: number,
+                minRound?: number,
+                maxRound?: number,
+                timeFunc?: string) {
+                spin(
+                    targetIndex,
+                    minRound ?? 3,
+                    maxRound ?? 5,
+                    timeFunc ?? 'cubic-bezier(.51, 0, .1, 1.06)',
+                );
             }
         })
     )
     const { width, time, children } = props;
 
-    const timeFunc = 'cubic-bezier(.51, 0, .1, 1.06)';
-
     const [angle, setAngle] = useState<number>(() => 360 / children.length);
     const [radius, setRadius] = useState<number>(() => width / 2 / Math.tan(Math.PI / children.length));
     const [spinning, setSpinning] = useState(false);
-    const [rootStyle, setRootStyle] = useState<CSSProperties>();
+    const [blurStyle, setBlurStyle] = useState<CSSProperties>();
     const [wheelStyle, setWheelStyle] = useState<CSSProperties>();
     const [backStyle, setBackStyle] = useState<CSSProperties>();
     const [currentAngle, setCurrentAngle] = useState(0);
-    const getEles = (children: ReactElement[]) => {
-        return children.map((d, i) => {
-            let width: string = d.props.style.width;
-            let trueWidth = Number(width.replace('px', ''));
-            console.log(d);
-            return (
-                <div
-                    key={i}
-                    className={classes.wheel_segment}
-                    style={{
-                        transform: `rotateY(${angle * i}deg) translateZ(${radius}px)`,
-                        marginLeft: `-${trueWidth / 2}px`
-                    }}
-                >
-                    {d}
-                </div>
-            );
-        });
-    }
-    const [eles, setEles] = useState(() => getEles(children));
-    const [styleSheet, _] = useState(() => {
+    const [eles, setEles] = useState<JSX.Element[]>();
+    const [styleSheet] = useState(() => {
         const styleElement = document.createElement('style');
         document.head.appendChild(styleElement);
         return styleElement.sheet;
     });
 
     useEffect(() => {
+        const getEles = (children: ReactElement[]) => {
+            return (children.map((d, i) => {
+                const width: string = d.props.style.width;
+                const trueWidth = Number(width.replace('px', ''));
+                return (
+                    <div
+                        key={i}
+                        className={classes.wheel_segment}
+                        style={{
+                            transform: `rotateY(${angle * i}deg) translateZ(${radius}px)`,
+                            marginLeft: `-${trueWidth / 2}px`,
+                            ...blurStyle
+                        }}
+                    >
+                        {d}
+                    </div>
+                );
+            }));
+        }
         const len = children.length;
         const angle = 360 / len;
-        const radius = width / 2 / Math.tan(Math.PI / len);
+        const r = width / 2 / Math.tan(Math.PI / len);
         setEles(getEles(children));
         setAngle(angle);
-        setRadius(radius);
-    }, [width, ...children.map(d => d.key)]);
-    const spin = (targetIndex: number) => {
+        setRadius(r);
+    }, [width, ...props.children.map(d => d.key), blurStyle]);
+    const spin = (
+        targetIndex: number,
+        minRound: number,
+        maxRound: number,
+        timeFunc: string) => {
         if (spinning) {
             return;
         }
+        if (minRound < 0 || maxRound < minRound) {
+            throw 'minRound or maxRound error';
+        }
         setSpinning(true);
-        let targetAngle = getTargetAngle(targetIndex);
+        let targetAngle = getTargetAngle(targetIndex, minRound, maxRound);
         const animateSpin = `
         @keyframes spin {
             0% {
@@ -92,7 +109,7 @@ const Wheel3D = forwardRef((props: {
         addAnimation(animateSpin);
         addAnimation(animateBack);
         setCurrentAngle(targetAngle % 360);
-        setRootStyle({ animation: `${classes.blur_filter} ${time}s ${timeFunc}` });
+        setBlurStyle({ animation: `${classes.blur_filter} ${time}s ${timeFunc}` });
         setWheelStyle({
             animation: `spin ${time}s ${timeFunc}`,
             transform: `rotateY(${targetAngle}deg)`
@@ -102,33 +119,41 @@ const Wheel3D = forwardRef((props: {
             transform: `rotateY(${-targetAngle}deg)`
         });
     }
-    const stopSpin = () => {
-        setRootStyle(undefined);
+
+    //#region private methods
+    const spinStopped = (props: AnimationEvent<HTMLDivElement>) => {
+        if (props.animationName != 'spin') {
+            return;
+        }
+        setBlurStyle(undefined);
         setWheelStyle({ transform: `rotateY(${currentAngle}deg)` });
         setBackStyle({ transform: `rotateY(${-currentAngle}deg)` });
+        // insert css rule twice, so remove twice
+        removeAnimation();
         removeAnimation();
         setSpinning(false);
     }
-
-    //#region private methods
     const addAnimation = (style: string) => {
         styleSheet?.insertRule(style, styleSheet.cssRules.length);
     }
     const removeAnimation = () => {
         styleSheet?.deleteRule(styleSheet.cssRules.length - 1);
     }
-    const getTargetAngle = (targetIndex: number) => {
-        const targetAngle = targetIndex * angle + (Math.round(Math.random() * 5) + 3) * 360;
+    const getTargetAngle = (
+        targetIndex: number,
+        minRound: number,
+        maxRound: number) => {
+        const targetAngle = targetIndex * angle + (Math.floor(Math.random() * (maxRound - minRound)) + minRound) * 360;
         return -targetAngle;
     }
     //#endregion
 
     return (
-        <section className={classes.wheel} style={rootStyle}>
+        <section className={classes.wheel}>
             <div
                 className={`${classes.wheel_inner}`}
                 style={wheelStyle}
-                onAnimationEnd={stopSpin}>
+                onAnimationEnd={spinStopped}>
                 <div className={classes.background} style={backStyle}></div>
                 <div style={{
                     backgroundColor: 'red',

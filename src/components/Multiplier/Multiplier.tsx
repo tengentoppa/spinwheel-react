@@ -26,9 +26,9 @@ const Multiplier = (props: {
     return (
         <section className={classes.root} style={{ backgroundImage: `${color == 'normal' ? '' : `url('./res/coin_flip/multiplier/${color}/coin_large.png')`}` }}>
             <img className={`${classes.coin_x}`} src={`/res/coin_flip/multiplier/${color}/x.png`} />
-            {Multies?.map(d => {
+            {Multies?.map((d, i) => {
                 return (
-                    <img className={`${classes.coin_num}`} src={`/res/coin_flip/multiplier/${color}/${d}.png`} />
+                    <img key={i} className={`${classes.coin_num}`} src={`/res/coin_flip/multiplier/${color}/${d}.png`} />
                 );
             })}
         </section>
