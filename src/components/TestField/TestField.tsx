@@ -53,7 +53,7 @@ export function TestField() {
             {/* <Coin multiplier={num} color={'blue'} /> */}
             {/* <CssSpinWheel /> */}
             {/* <MoveCoin strs={['1', '2']} /> */}
-            <Wheel3D width={width} ref={refWheel3D}>
+            <Wheel3D width={width} background={(<div style={{ height: '100%', width: '100%', backgroundColor: 'brown' }} />)} ref={refWheel3D}>
                 {Array.from({ length: 25 }, (_, i) => i).map((_, i) => {
                     return (
                         <div

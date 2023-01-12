@@ -19,6 +19,7 @@ const Wheel3D = forwardRef((props: {
     width: number,
     /**Wheel contents */
     children: ReactElement[],
+    background: ReactElement,
 }, ref) => {
     useImperativeHandle(
         ref,
@@ -33,12 +34,12 @@ const Wheel3D = forwardRef((props: {
                     time ?? 3,
                     minRound ?? 3,
                     maxRound ?? 5,
-                    timeFunc ?? 'cubic-bezier(.21,.01,.77,1.12)',
+                    timeFunc ?? 'cubic-bezier(.21,.01,.74,1.02)',
                 );
             }
         })
     )
-    const { width, children } = props;
+    const { width, children, background } = props;
 
     const [angle, setAngle] = useState<number>(() => 360 / children.length);
     const [spinning, setSpinning] = useState(false);
@@ -162,7 +163,7 @@ const Wheel3D = forwardRef((props: {
                 className={`${classes.wheel_inner}`}
                 style={wheelStyle}
                 onAnimationEnd={spinStopped}>
-                <div className={classes.background} style={backStyle}></div>
+                <div className={classes.background} style={backStyle}>{background}</div>
                 <div style={{
                     backgroundColor: 'red',
                     width: `${width}px`,
