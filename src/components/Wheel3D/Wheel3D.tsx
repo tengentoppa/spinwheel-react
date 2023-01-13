@@ -1,4 +1,4 @@
-import { CSSProperties, AnimationEvent, ReactElement, forwardRef, useEffect, useImperativeHandle, useState, ReactEventHandler } from 'react';
+import { CSSProperties, AnimationEvent, ReactElement, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import classes from './Wheel3D.module.scss';
 
 export type Wheel3DHandler = {

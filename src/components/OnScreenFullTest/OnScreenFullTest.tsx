@@ -1,4 +1,4 @@
-import { ReactElement, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Multiplier from '../Multiplier/Multiplier';
 import classes from './OnScreenFullTest.module.scss';
 import Wheel3D, { Wheel3DHandler } from '../Wheel3D/Wheel3D';
@@ -6,7 +6,7 @@ import Wheel3D, { Wheel3DHandler } from '../Wheel3D/Wheel3D';
 export function OnScreenFullTest() {
     const width = 200;
     const [count, setCount] = useState(3);
-    const [step, setStep] = useState(0);
+    const [step, setStep] = useState(3);
     const [showWheel, setShowWheel] = useState(false);
     const [showCoin1, setShowCoin1] = useState(false);
     const [showCoin2, setShowCoin2] = useState(false);
@@ -14,7 +14,32 @@ export function OnScreenFullTest() {
     const [coinValue2, setCoinValue2] = useState(0);
     const [bannerImg, setBannerImg] = useState<string | undefined>();
     const [animateRunning, setAnimateRunning] = useState(false);
+    const [countdownRunning, setCountdownRunning] = useState(false);
+    const [countdown, setCountdown] = useState<number>(0);
     const refWheel3D = useRef<Wheel3DHandler>();
+    useEffect(() => {
+        if (!countdownRunning) {
+            return () => { }
+        }
+        const t = setInterval(() => {
+            setCountdown(d => {
+                if (d <= 1) {
+                    setCountdownRunning(false);
+                    setAnimateRunning(false);
+                    setBannerImg('timetoflip');
+                    return 0;
+                }
+                return d! - 1;
+            });
+        }, 1000);
+
+        return () => {
+            console.log('clear')
+            clearInterval(t);
+        }
+    }, [countdownRunning])
+
+
     const steps: (() => void)[] = [
         () => {
             setShowWheel(false);
@@ -29,7 +54,7 @@ export function OnScreenFullTest() {
             const coinValue = count + 1;
             setCount(coinValue);
             setCoinValue1(coinValue);
-            refWheel3D.current?.spin(coinValue, 2, 2, 5);
+            refWheel3D.current?.spin(coinValue, 1, 2, 5);
         },
         () => {
             setShowCoin1(true);
@@ -44,7 +69,7 @@ export function OnScreenFullTest() {
             const coinValue = count + 1;
             setCount(coinValue);
             setCoinValue2(coinValue);
-            refWheel3D.current?.spin(coinValue, 2, 2, 5);
+            refWheel3D.current?.spin(coinValue, 1, 2, 5);
         },
         () => {
             setShowCoin2(true);
@@ -54,7 +79,9 @@ export function OnScreenFullTest() {
             setShowCoin2(false);
         },
         () => {
-            setBannerImg('timetoflip');
+            setCountdown(3);
+            setCountdownRunning(true);
+            setAnimateRunning(true);
         },
 
     ]
@@ -97,8 +124,12 @@ export function OnScreenFullTest() {
                         })}
                     </Wheel3D>
                 </div>
-                <div className={`${classes.coin} ${showCoin1 ? '' : classes.hide}`}><Multiplier back='blue' multiplier={coinValue1} /></div>
-                <div className={`${classes.coin} ${showCoin2 ? '' : classes.hide}`}><Multiplier back='red' multiplier={coinValue2} /></div>
+                <div className={`${classes.coin} ${classes.center} ${showCoin1 ? '' : classes.hide}`}><Multiplier back='blue' multiplier={coinValue1} /></div>
+                <div className={`${classes.coin} ${classes.center} ${showCoin2 ? '' : classes.hide}`}><Multiplier back='red' multiplier={coinValue2} /></div>
+                <img
+                    className={`${classes.countdown} ${classes.center} ${countdown ?? 0 > 0 ? '' : classes.hide}`}
+                    alt='countdown'
+                    src={`/res/coin_flip/countdown/${countdown}.png`} />
             </div>
             <button onClick={controllStep} style={{ width: '200px', height: '100px', fontSize: '30px', backgroundColor: 'yellow' }}>next step</button>
         </div>
