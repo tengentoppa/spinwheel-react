@@ -8,72 +8,99 @@ export function OnScreenFullTest() {
     const [count, setCount] = useState(3);
     const [step, setStep] = useState(0);
     const [showWheel, setShowWheel] = useState(false);
-    const [spinning, setSpinning] = useState(false);
+    const [showCoin1, setShowCoin1] = useState(false);
+    const [showCoin2, setShowCoin2] = useState(false);
+    const [coinValue1, setCoinValue1] = useState(0);
+    const [coinValue2, setCoinValue2] = useState(0);
+    const [bannerImg, setBannerImg] = useState<string | undefined>();
+    const [animateRunning, setAnimateRunning] = useState(false);
     const refWheel3D = useRef<Wheel3DHandler>();
+    const steps: (() => void)[] = [
+        () => {
+            setShowWheel(false);
+            setBannerImg('game icon');
+        },
+        () => {
+            setShowWheel(true);
+            setBannerImg('readytoplay');
+        },
+        () => {
+            setAnimateRunning(true);
+            const coinValue = count + 1;
+            setCount(coinValue);
+            setCoinValue1(coinValue);
+            refWheel3D.current?.spin(coinValue, 2, 2, 5);
+        },
+        () => {
+            setShowCoin1(true);
+            setShowWheel(false);
+        },
+        () => {
+            setShowCoin1(false);
+            setShowWheel(true);
+        },
+        () => {
+            setAnimateRunning(true);
+            const coinValue = count + 1;
+            setCount(coinValue);
+            setCoinValue2(coinValue);
+            refWheel3D.current?.spin(coinValue, 2, 2, 5);
+        },
+        () => {
+            setShowCoin2(true);
+            setShowWheel(false);
+        },
+        () => {
+            setShowCoin2(false);
+        },
+        () => {
+            setBannerImg('timetoflip');
+        },
+
+    ]
     const controllStep = () => {
-        if (spinning) {
+        if (animateRunning) {
             return;
         }
         let s = step + 1;
-        if (s > 5) {
+        if (s >= steps.length) {
             s = 0;
         }
+        steps[s]();
         console.log(`step ${s}`);
-        switch (s) {
-            case 0:
-                setShowWheel(false);
-                break;
-            case 1:
-                setShowWheel(true);
-                break;
-            case 2:
-                setCount(d => d + 1);
-                refWheel3D.current?.spin(count, 3, 2, 5);
-                break;
-        }
-
         setStep(s);
-    }
-    const getBanner = (step: number): ReactElement => {
-        let imgName;
-        switch (step) {
-            case 0:
-                return (<div>Game Icon</div>);
-            case 1:
-            case 2:
-                imgName = 'readytoplay';
-                break;
-            case 3:
-                imgName = 'timetoflip';
-                break;
-        }
-        return (<img className={classes.banner} alt='banner' src={`/res/coin_flip/banner/${imgName}.png`} />);
     }
 
     return (
         <div className={classes.root}>
-            {getBanner(step)}
-            <Wheel3D
-                ref={refWheel3D}
-                style={{
-                    width: '100%',
-                    opacity: showWheel ? 1 : 0
-                }}
-                childrenWidth={width}
-                background={(<div style={{ height: '100%', width: '100%', backgroundColor: 'brown' }} />)}>
-                {Array.from({ length: 25 }, (_, i) => i).map((_, i) => {
-                    return (
-                        <div
-                            key={i}
-                            className={classes.wheel_item}
-                            style={{ height: `${width}px`, width: `${width}px` }}
-                        >
-                            <Multiplier key={i} back='normal' multiplier={i} />
-                        </div>
-                    );
-                })}
-            </Wheel3D>
-            <button onClick={controllStep} style={{ width: '200px', height: '200px', backgroundColor: 'yellow' }}>start</button>
+            {<img
+                className={`${classes.banner} ${bannerImg ? '' : classes.hidden}`}
+                alt='banner'
+                src={`/res/coin_flip/banner/${bannerImg}.png`} />}
+            <div className={classes.wheel_container} >
+                <div className={`${showWheel ? '' : classes.hide}`}>
+                    <Wheel3D
+                        ref={refWheel3D}
+                        onSpinEnd={() => { setAnimateRunning(false); }}
+                        childrenWidth={width}
+                        background={(<div style={{ height: '100%', width: '100%', backgroundColor: 'brown' }} />)}>
+                        {Array.from({ length: 25 }, (_, i) => i).map((_, i) => {
+                            return (
+                                <div
+                                    key={i}
+                                    className={classes.wheel_item}
+                                    style={{ height: `${width}px`, width: `${width}px` }}
+                                >
+                                    <Multiplier key={i} back='normal' multiplier={i} />
+                                </div>
+                            );
+                        })}
+                    </Wheel3D>
+                </div>
+                <div className={`${classes.coin} ${showCoin1 ? '' : classes.hide}`}><Multiplier back='blue' multiplier={coinValue1} /></div>
+                <div className={`${classes.coin} ${showCoin2 ? '' : classes.hide}`}><Multiplier back='red' multiplier={coinValue2} /></div>
+            </div>
+            <button onClick={controllStep} style={{ width: '200px', height: '100px', fontSize: '30px', backgroundColor: 'yellow' }}>next step</button>
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import { CSSProperties, AnimationEvent, ReactElement, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { CSSProperties, AnimationEvent, ReactElement, forwardRef, useEffect, useImperativeHandle, useState, ReactEventHandler } from 'react';
 import classes from './Wheel3D.module.scss';
 
 export type Wheel3DHandler = {
@@ -21,8 +21,8 @@ const Wheel3D = forwardRef((props: {
     children: ReactElement[],
     /**Wheel background */
     background: ReactElement,
-    /**Wheel style */
-    style?: CSSProperties,
+    /**Handle event on wheel stop */
+    onSpinEnd?: () => void,
 }, ref) => {
     useImperativeHandle(
         ref,
@@ -42,7 +42,7 @@ const Wheel3D = forwardRef((props: {
             }
         })
     )
-    const { childrenWidth, children, background, style } = props;
+    const { childrenWidth, children, background, onSpinEnd } = props;
 
     const [angle, setAngle] = useState<number>(() => 360 / children.length);
     const [spinning, setSpinning] = useState(false);
@@ -137,6 +137,7 @@ const Wheel3D = forwardRef((props: {
         if (props.animationName !== 'spin') {
             return;
         }
+        onSpinEnd && onSpinEnd();
         setBlurStyle(undefined);
         setWheelStyle({ transform: `rotateY(${currentAngle}deg)` });
         setBackStyle({ transform: `rotateY(${-currentAngle}deg)` });
@@ -161,7 +162,7 @@ const Wheel3D = forwardRef((props: {
     //#endregion
 
     return (
-        <section className={classes.wheel} style={style}>
+        <section className={classes.wheel}>
             <div
                 className={`${classes.wheel_inner}`}
                 style={wheelStyle}
