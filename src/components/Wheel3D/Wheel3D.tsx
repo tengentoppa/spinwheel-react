@@ -16,10 +16,13 @@ export type Wheel3DHandler = {
 };
 const Wheel3D = forwardRef((props: {
     /**The width of every cell is different from the children's width */
-    width: number,
+    childrenWidth: number,
     /**Wheel contents */
     children: ReactElement[],
+    /**Wheel background */
     background: ReactElement,
+    /**Wheel style */
+    style?: CSSProperties,
 }, ref) => {
     useImperativeHandle(
         ref,
@@ -39,7 +42,7 @@ const Wheel3D = forwardRef((props: {
             }
         })
     )
-    const { width, children, background } = props;
+    const { childrenWidth, children, background, style } = props;
 
     const [angle, setAngle] = useState<number>(() => 360 / children.length);
     const [spinning, setSpinning] = useState(false);
@@ -76,10 +79,10 @@ const Wheel3D = forwardRef((props: {
         }
         const len = children.length;
         const angle = 360 / len;
-        const r = width / 2 / Math.tan(Math.PI / len);
+        const r = childrenWidth / 2 / Math.tan(Math.PI / len);
         setEles(getEles(children, r));
         setAngle(angle);
-    }, [width, ...children.map(d => d.key), blurStyle]);
+    }, [childrenWidth, ...children.map(d => d.key), blurStyle]);
     const spin = (
         targetIndex: number,
         time: number,
@@ -93,7 +96,7 @@ const Wheel3D = forwardRef((props: {
             throw new Error('minRound or maxRound error');
         }
         setSpinning(true);
-        let targetAngle = getTargetAngle(targetIndex, minRound, maxRound);
+        const targetAngle = getTargetAngle(targetIndex, minRound, maxRound);
         const animateSpin = `
         @keyframes spin {
             0% {
@@ -158,21 +161,12 @@ const Wheel3D = forwardRef((props: {
     //#endregion
 
     return (
-        <section className={classes.wheel}>
+        <section className={classes.wheel} style={style}>
             <div
                 className={`${classes.wheel_inner}`}
                 style={wheelStyle}
                 onAnimationEnd={spinStopped}>
                 <div className={classes.background} style={backStyle}>{background}</div>
-                <div style={{
-                    backgroundColor: 'red',
-                    width: `${width}px`,
-                    height: '10px',
-                    position: 'absolute',
-                    top: '30%',
-                    left: '50%',
-                    transform: 'translate(-50%, 0)'
-                }} />
                 {eles}
             </div>
         </section >
