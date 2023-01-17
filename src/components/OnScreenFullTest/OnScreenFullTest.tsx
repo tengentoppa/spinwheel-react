@@ -16,7 +16,7 @@ export function OnScreenFullTest() {
     const [animateRunning, setAnimateRunning] = useState(false);
     const [countdownRunning, setCountdownRunning] = useState(false);
     const [countdown, setCountdown] = useState<number>(0);
-    const refWheel3D = useRef<Wheel3DHandler>();
+    const refWheel3D = useRef<Wheel3DHandler>(null);
     useEffect(() => {
         if (!countdownRunning) {
             return () => { }
@@ -118,14 +118,14 @@ export function OnScreenFullTest() {
                                     className={classes.wheel_item}
                                     style={{ height: `${width}px`, width: `${width}px` }}
                                 >
-                                    <Multiplier key={i} back='normal' multiplier={i} />
+                                    <Multiplier key={i} back='normal' backSize='screen' multiplier={i} />
                                 </div>
                             );
                         })}
                     </Wheel3D>
                 </div>
-                <div className={`${classes.coin} ${classes.center} ${showCoin1 ? '' : classes.hide}`}><Multiplier back='blue' multiplier={coinValue1} /></div>
-                <div className={`${classes.coin} ${classes.center} ${showCoin2 ? '' : classes.hide}`}><Multiplier back='red' multiplier={coinValue2} /></div>
+                <div className={`${classes.coin} ${classes.center} ${showCoin1 ? '' : classes.hide}`}><Multiplier back='blue' backSize='screen' multiplier={coinValue1} /></div>
+                <div className={`${classes.coin} ${classes.center} ${showCoin2 ? '' : classes.hide}`}><Multiplier back='red' backSize='screen' multiplier={coinValue2} /></div>
                 <img
                     className={`${classes.countdown} ${classes.center} ${countdown ?? 0 > 0 ? '' : classes.hide}`}
                     alt='countdown'

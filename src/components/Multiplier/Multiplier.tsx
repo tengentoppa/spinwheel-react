@@ -4,31 +4,19 @@ import classes from './Multiplier.module.scss';
 const Multiplier = (props: {
     multiplier: number,
     back: 'blue' | 'red' | 'normal' | 'blur',
+    backSize: 'screen' | 'large' | 'small'
     xHeight?: number,
     numHeight?: number
 }) => {
-    const { multiplier, back, xHeight, numHeight } = props;
+    const { multiplier, back, backSize, xHeight, numHeight } = props;
     const [Multies, setMulties] = useState<string[]>();
     useEffect(() => {
-        splitNums(multiplier);
+        setMulties(multiplier.toString().split(''));
     }, [multiplier]);
-    const splitNums = (num: number) => {
-        if (num === 0) {
-            setMulties(['0']);
-            return;
-        }
-        const nums: string[] = [];
-        while (num > 0) {
-            const remainder = num % 10;
-            nums.unshift(remainder.toString());
-            num = Math.floor(num / 10);
-        }
-        setMulties(nums);
-    }
     return (
         <section
             className={classes.root}
-            style={{ backgroundImage: `${back === 'normal' ? '' : `url('./res/coin_flip/multiplier/${back}/coin_large.png')`}` }}>
+            style={{ backgroundImage: `${back === 'normal' ? '' : `url('./res/coin_flip/multiplier/${back}/coin_${backSize}.png')`}` }}>
             <img
                 alt={`mx`}
                 className={`${classes.coin_x}`}

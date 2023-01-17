@@ -1,9 +1,9 @@
 import './App.css';
-import { OnScreenFullTest } from './components/OnScreenFullTest/OnScreenFullTest';
+import { ClientFullTest } from './components/ClientFullTest/ClientFullTest';
 
 function App() {
   return (
-    <OnScreenFullTest />
+    <ClientFullTest />
   );
 }
 
